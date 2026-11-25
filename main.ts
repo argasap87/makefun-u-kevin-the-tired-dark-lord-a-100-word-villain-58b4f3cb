@@ -13,7 +13,16 @@ const MONOLOGUE =
   "The bone dust gets in my nose. Three thousand years of rule, and the guild still sends first-year clerics. Clerics. I fixed the Spire pipes myself, copper and self-clean runes, since the builder left mid-war and never came back. My soul sits in a tax golem. No one checks the dead. Next week I take the coast, slow, by post. The seals are signed. The kings have not read them. Now the Chosen One knocks. Again. Tell him the bridge is stuck. I oiled it Tuesday. If he talks long, tip him in the moat. The kraken likes knights crisp.";
 
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
-const text = MONOLOGUE.trim();
+const text = MONOLOGUE;
+if (text !== text.trim()) {
+  throw new Error("entry must not have leading/trailing whitespace");
+}
+if (/[\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000\uFEFF]/.test(text)) {
+  throw new Error("entry must not contain Unicode space separators");
+}
+if (text.normalize("NFC") !== text) {
+  throw new Error("entry must be NFC-normalized");
+}
 const words = text.split(/\s+/).filter(Boolean);
 
 if (words.length !== 100) {
